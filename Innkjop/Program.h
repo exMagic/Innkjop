@@ -8,6 +8,7 @@ namespace Innkjop {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace MySql::Data::MySqlClient;
 
 	/// <summary>
 	/// Summary for Program
@@ -21,6 +22,8 @@ namespace Innkjop {
 		int id_user;
 		bool powodzenie = false;
 	private: System::Windows::Forms::Label^  label1;
+	private: System::Windows::Forms::Button^  button1;
+	private: System::Windows::Forms::DataGridView^  dgMFlowers;
 	public:
 	public:
 		String^ konfiguracja = L"datasource=localhost;port=3306;username=root;password=kolanko7;database=inn";
@@ -59,33 +62,64 @@ namespace Innkjop {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->dgMFlowers = (gcnew System::Windows::Forms::DataGridView());
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgMFlowers))->BeginInit();
 			this->SuspendLayout();
 			// 
-			// label1
+			// button1
 			// 
-			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(97, 38);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(35, 13);
-			this->label1->TabIndex = 0;
-			this->label1->Text = L"label1";
-
-
+			this->button1->Location = System::Drawing::Point(21, 14);
+			this->button1->Name = L"button1";
+			this->button1->Size = System::Drawing::Size(50, 23);
+			this->button1->TabIndex = 0;
+			this->button1->Text = L"button1";
+			this->button1->UseVisualStyleBackColor = true;
+			this->button1->Click += gcnew System::EventHandler(this, &Program::button1_Click);
+			// 
+			// dgMFlowers
+			// 
+			this->dgMFlowers->AllowUserToAddRows = false;
+			this->dgMFlowers->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->dgMFlowers->Location = System::Drawing::Point(27, 55);
+			this->dgMFlowers->Name = L"dgMFlowers";
+			this->dgMFlowers->Size = System::Drawing::Size(529, 137);
+			this->dgMFlowers->TabIndex = 1;
 			// 
 			// Program
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
-			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(284, 261);
-			this->Controls->Add(this->label1);
+			this->ClientSize = System::Drawing::Size(730, 427);
+			this->Controls->Add(this->dgMFlowers);
+			this->Controls->Add(this->button1);
 			this->Name = L"Program";
-			this->Text = L"Program";
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgMFlowers))->EndInit();
 			this->ResumeLayout(false);
-			this->PerformLayout();
 
 		}
 #pragma endregion
 
+	private: void szukaj_klientow(System::Windows::Forms::DataGridView^ siatka) {
+		MySqlConnection^ laczBaze = gcnew MySqlConnection(konfiguracja);
+		MySqlCommand^ zapytanie = gcnew MySqlCommand("SELECT * FROM flowers", laczBaze);
+		try
+		{
+			laczBaze->Open();
+			MySqlDataAdapter^ moja = gcnew MySqlDataAdapter();
+			moja->SelectCommand = zapytanie;
+			DataTable^ tabela = gcnew DataTable();
+			moja->Fill(tabela);
+
+			BindingSource^ zrodlo = gcnew BindingSource();
+			zrodlo->DataSource = tabela;
+			siatka->DataSource = zrodlo;
+			laczBaze->Close();
+		}
+		catch (Exception^ komunikat) {
+			MessageBox::Show(komunikat->Message);
+		}
+	}
+	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+		szukaj_klientow(dgMFlowers);
+	}
 	};
 }
