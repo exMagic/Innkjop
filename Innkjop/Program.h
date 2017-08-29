@@ -24,9 +24,14 @@ namespace Innkjop {
 	private: System::Windows::Forms::Label^  label1;
 	private: System::Windows::Forms::Button^  button1;
 	private: System::Windows::Forms::DataGridView^  dgMFlowers;
-	private: System::Windows::Forms::DataGridView^  dgOrders;
+	private: System::Windows::Forms::DataGridView^  dgOrder;
+
 	private: System::Windows::Forms::Button^  button2;
+	private: System::Windows::Forms::DataGridView^  dgOrders;
+
+
 	public:
+		String^ order_nr;
 	public:
 		String^ konfiguracja = L"datasource=localhost;port=3306;username=root;password=kolanko7;database=inn";
 		Program(int uzytkownik)
@@ -37,6 +42,8 @@ namespace Innkjop {
 			//
 			//TODO: Add the constructor code here
 			//
+			showOrders(dgOrders);
+			dgOrders->Columns[0]->Visible = false;
 		}
 
 	protected:
@@ -66,9 +73,11 @@ namespace Innkjop {
 		{
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->dgMFlowers = (gcnew System::Windows::Forms::DataGridView());
-			this->dgOrders = (gcnew System::Windows::Forms::DataGridView());
+			this->dgOrder = (gcnew System::Windows::Forms::DataGridView());
 			this->button2 = (gcnew System::Windows::Forms::Button());
+			this->dgOrders = (gcnew System::Windows::Forms::DataGridView());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgMFlowers))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgOrder))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgOrders))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -91,14 +100,14 @@ namespace Innkjop {
 			this->dgMFlowers->Size = System::Drawing::Size(529, 137);
 			this->dgMFlowers->TabIndex = 1;
 			// 
-			// dgOrders
+			// dgOrder
 			// 
-			this->dgOrders->AllowUserToAddRows = false;
-			this->dgOrders->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dgOrders->Location = System::Drawing::Point(27, 241);
-			this->dgOrders->Name = L"dgOrders";
-			this->dgOrders->Size = System::Drawing::Size(529, 137);
-			this->dgOrders->TabIndex = 3;
+			this->dgOrder->AllowUserToAddRows = false;
+			this->dgOrder->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->dgOrder->Location = System::Drawing::Point(27, 241);
+			this->dgOrder->Name = L"dgOrder";
+			this->dgOrder->Size = System::Drawing::Size(529, 137);
+			this->dgOrder->TabIndex = 3;
 			// 
 			// button2
 			// 
@@ -110,20 +119,32 @@ namespace Innkjop {
 			this->button2->UseVisualStyleBackColor = true;
 			this->button2->Click += gcnew System::EventHandler(this, &Program::button2_Click);
 			// 
+			// dgOrders
+			// 
+			this->dgOrders->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->dgOrders->Location = System::Drawing::Point(588, 60);
+			this->dgOrders->Name = L"dgOrders";
+			this->dgOrders->Size = System::Drawing::Size(96, 131);
+			this->dgOrders->TabIndex = 4;
+			this->dgOrders->CellClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &Program::dgOrders_CellClick);
+			// 
 			// Program
 			// 
 			this->ClientSize = System::Drawing::Size(730, 609);
 			this->Controls->Add(this->dgOrders);
+			this->Controls->Add(this->dgOrder);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->dgMFlowers);
 			this->Controls->Add(this->button1);
 			this->Name = L"Program";
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgMFlowers))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgOrder))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgOrders))->EndInit();
 			this->ResumeLayout(false);
 
 		}
 #pragma endregion
+
 
 	private: void szukaj_klientow(System::Windows::Forms::DataGridView^ siatka) {
 		MySqlConnection^ laczBaze = gcnew MySqlConnection(konfiguracja);
@@ -145,9 +166,29 @@ namespace Innkjop {
 			MessageBox::Show(komunikat->Message);
 		}
 	}
-	private: void szukaj_klientow2(System::Windows::Forms::DataGridView^ siatka) {
+	private: void showOrders(System::Windows::Forms::DataGridView^ siatka) {
 		MySqlConnection^ laczBaze = gcnew MySqlConnection(konfiguracja);
-		MySqlCommand^ zapytanie = gcnew MySqlCommand("select orders.boxes, orders.order_nr, flowers.variety, flowers.lenght from orders, flowers where orders.flowers_id = flowers.fl_id", laczBaze);
+		MySqlCommand^ zapytanie = gcnew MySqlCommand("select DISTINCT order_nr from orders;", laczBaze);
+		try
+		{
+			laczBaze->Open();
+			MySqlDataAdapter^ moja = gcnew MySqlDataAdapter();
+			moja->SelectCommand = zapytanie;
+			DataTable^ tabela = gcnew DataTable();
+			moja->Fill(tabela);
+
+			BindingSource^ zrodlo = gcnew BindingSource();
+			zrodlo->DataSource = tabela;
+			siatka->DataSource = zrodlo;
+			laczBaze->Close();
+		}
+		catch (Exception^ komunikat) {
+			MessageBox::Show(komunikat->Message);
+		}
+	}
+	private: void showOrder(System::Windows::Forms::DataGridView^ siatka) {
+		MySqlConnection^ laczBaze = gcnew MySqlConnection(konfiguracja);
+		MySqlCommand^ zapytanie = gcnew MySqlCommand("select flowers.variety, flowers.lenght, orders.boxes, orders.order_nr  from orders, flowers where orders.flowers_id = flowers.fl_id and orders.order_nr = '0011';", laczBaze);
 		try
 		{
 			laczBaze->Open();
@@ -169,7 +210,35 @@ namespace Innkjop {
 		szukaj_klientow(dgMFlowers);
 	}
 	private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
-		szukaj_klientow2(dgOrders);
+
+	}
+	private: System::Void dgOrders_CellClick(System::Object^  sender, System::Windows::Forms::DataGridViewCellEventArgs^  e) {
+		if (e->RowIndex >= 0) {
+			order_nr = Convert::ToString(dgOrders->Rows[e->RowIndex]->Cells[0]->Value);
+
+			MySqlConnection^ laczBaze = gcnew MySqlConnection(konfiguracja);
+			MySqlCommand^ zapytanie = gcnew MySqlCommand("select flowers.variety, flowers.lenght, orders.boxes, orders.order_nr  from orders, flowers where orders.flowers_id = flowers.fl_id and orders.order_nr = '"+order_nr+"';", laczBaze);
+			try
+			{
+				laczBaze->Open();
+				MySqlDataAdapter^ moja = gcnew MySqlDataAdapter();
+				moja->SelectCommand = zapytanie;
+				DataTable^ tabela = gcnew DataTable();
+				moja->Fill(tabela);
+
+				BindingSource^ zrodlo = gcnew BindingSource();
+				zrodlo->DataSource = tabela;
+				dgOrder->DataSource = zrodlo;
+				laczBaze->Close();
+			}
+			catch (Exception^ komunikat) {
+				MessageBox::Show(komunikat->Message);
+			}
+
+
+		}
+
+
 	}
 	};
 }
