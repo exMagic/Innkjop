@@ -42,6 +42,9 @@ namespace Innkjop {
 	private: System::Windows::Forms::TabPage^  tabPage1;
 	private: System::Windows::Forms::TabPage^  tabPage2;
 
+	private: System::Windows::Forms::BindingSource^  bindingSource1;
+
+
 
 
 
@@ -73,12 +76,14 @@ namespace Innkjop {
 				delete components;
 			}
 		}
+	private: System::ComponentModel::IContainer^  components;
+	protected:
 
 	private:
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		System::ComponentModel::Container ^components;
+
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -87,6 +92,7 @@ namespace Innkjop {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->dgMFlowers = (gcnew System::Windows::Forms::DataGridView());
 			this->dgOrder = (gcnew System::Windows::Forms::DataGridView());
@@ -98,6 +104,7 @@ namespace Innkjop {
 			this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
 			this->tabPage2 = (gcnew System::Windows::Forms::TabPage());
+			this->bindingSource1 = (gcnew System::Windows::Forms::BindingSource(this->components));
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgMFlowers))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgOrder))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgOrders))->BeginInit();
@@ -105,6 +112,7 @@ namespace Innkjop {
 			this->tabControl1->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			this->tabPage2->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->bindingSource1))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// button1
@@ -229,6 +237,10 @@ namespace Innkjop {
 			this->tabPage2->UseVisualStyleBackColor = true;
 			this->tabPage2->Click += gcnew System::EventHandler(this, &Program::tabPage2_Click);
 			// 
+			// bindingSource1
+			// 
+			this->bindingSource1->CurrentChanged += gcnew System::EventHandler(this, &Program::bindingSource1_CurrentChanged);
+			// 
 			// Program
 			// 
 			this->ClientSize = System::Drawing::Size(1220, 647);
@@ -243,6 +255,7 @@ namespace Innkjop {
 			this->tabPage1->ResumeLayout(false);
 			this->tabPage2->ResumeLayout(false);
 			this->tabPage2->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->bindingSource1))->EndInit();
 			this->ResumeLayout(false);
 
 		}
@@ -251,7 +264,7 @@ namespace Innkjop {
 
 	private: void szukaj_klientow(System::Windows::Forms::DataGridView^ siatka) {
 		MySqlConnection^ laczBaze = gcnew MySqlConnection(konfiguracja);
-		MySqlCommand^ zapytanie = gcnew MySqlCommand("SELECT * FROM flowers", laczBaze);
+		MySqlCommand^ zapytanie = gcnew MySqlCommand("select flowers.variety, flowers.colour, flowers.plu, farms.farm_name, flowers.barcode, flowers.mix, flowers.stickers_text, flowers.lenght, flowers.bucket_size, flowers.sleeve_type, flowers.fob, flowers.price_pr_bunch, flowers.fairtrade, flowers.bunch_pr_box, flowers.bunch_pr_bucket, flowers.stems_pr_bunch, flowers.pak_rate from flowers, farms where flowers.farm_id = farms.farm_id order by lenght desc, variety", laczBaze);
 		try
 		{
 			laczBaze->Open();
@@ -382,6 +395,8 @@ private: System::Void label5_Click(System::Object^  sender, System::EventArgs^  
 private: System::Void tabControl1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
 }
 private: System::Void tabPage1_Click(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void bindingSource1_CurrentChanged(System::Object^  sender, System::EventArgs^  e) {
 }
 };
 }
