@@ -42,7 +42,7 @@ namespace Innkjop {
 	private: System::Windows::Forms::TabPage^  tabPage1;
 	private: System::Windows::Forms::TabPage^  tabPage2;
 
-	private: System::Windows::Forms::BindingSource^  bindingSource1;
+
 
 
 
@@ -92,7 +92,6 @@ namespace Innkjop {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			this->components = (gcnew System::ComponentModel::Container());
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->dgMFlowers = (gcnew System::Windows::Forms::DataGridView());
 			this->dgOrder = (gcnew System::Windows::Forms::DataGridView());
@@ -104,7 +103,6 @@ namespace Innkjop {
 			this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
 			this->tabPage2 = (gcnew System::Windows::Forms::TabPage());
-			this->bindingSource1 = (gcnew System::Windows::Forms::BindingSource(this->components));
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgMFlowers))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgOrder))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgOrders))->BeginInit();
@@ -112,7 +110,6 @@ namespace Innkjop {
 			this->tabControl1->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			this->tabPage2->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->bindingSource1))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// button1
@@ -130,9 +127,9 @@ namespace Innkjop {
 			this->dgMFlowers->AllowUserToAddRows = false;
 			this->dgMFlowers->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
 			this->dgMFlowers->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dgMFlowers->Location = System::Drawing::Point(23, 60);
+			this->dgMFlowers->Location = System::Drawing::Point(23, 67);
 			this->dgMFlowers->Name = L"dgMFlowers";
-			this->dgMFlowers->Size = System::Drawing::Size(1121, 443);
+			this->dgMFlowers->Size = System::Drawing::Size(1011, 443);
 			this->dgMFlowers->TabIndex = 1;
 			this->dgMFlowers->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &Program::dgMFlowers_CellContentClick);
 			// 
@@ -198,9 +195,12 @@ namespace Innkjop {
 			// 
 			// tabControl1
 			// 
+			this->tabControl1->Alignment = System::Windows::Forms::TabAlignment::Left;
+			this->tabControl1->Appearance = System::Windows::Forms::TabAppearance::Buttons;
 			this->tabControl1->Controls->Add(this->tabPage1);
 			this->tabControl1->Controls->Add(this->tabPage2);
 			this->tabControl1->Location = System::Drawing::Point(12, 28);
+			this->tabControl1->Multiline = true;
 			this->tabControl1->Name = L"tabControl1";
 			this->tabControl1->SelectedIndex = 0;
 			this->tabControl1->Size = System::Drawing::Size(1196, 564);
@@ -211,10 +211,10 @@ namespace Innkjop {
 			// 
 			this->tabPage1->Controls->Add(this->dgMFlowers);
 			this->tabPage1->Controls->Add(this->button1);
-			this->tabPage1->Location = System::Drawing::Point(4, 22);
+			this->tabPage1->Location = System::Drawing::Point(133, 4);
 			this->tabPage1->Name = L"tabPage1";
 			this->tabPage1->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage1->Size = System::Drawing::Size(1188, 538);
+			this->tabPage1->Size = System::Drawing::Size(1059, 556);
 			this->tabPage1->TabIndex = 0;
 			this->tabPage1->Text = L"Flowers base";
 			this->tabPage1->UseVisualStyleBackColor = true;
@@ -228,18 +228,14 @@ namespace Innkjop {
 			this->tabPage2->Controls->Add(this->label4);
 			this->tabPage2->Controls->Add(this->label3);
 			this->tabPage2->Controls->Add(this->dgAvvik);
-			this->tabPage2->Location = System::Drawing::Point(4, 22);
+			this->tabPage2->Location = System::Drawing::Point(133, 4);
 			this->tabPage2->Name = L"tabPage2";
 			this->tabPage2->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage2->Size = System::Drawing::Size(1188, 538);
+			this->tabPage2->Size = System::Drawing::Size(1059, 556);
 			this->tabPage2->TabIndex = 1;
 			this->tabPage2->Text = L"Orders";
 			this->tabPage2->UseVisualStyleBackColor = true;
 			this->tabPage2->Click += gcnew System::EventHandler(this, &Program::tabPage2_Click);
-			// 
-			// bindingSource1
-			// 
-			this->bindingSource1->CurrentChanged += gcnew System::EventHandler(this, &Program::bindingSource1_CurrentChanged);
 			// 
 			// Program
 			// 
@@ -255,7 +251,6 @@ namespace Innkjop {
 			this->tabPage1->ResumeLayout(false);
 			this->tabPage2->ResumeLayout(false);
 			this->tabPage2->PerformLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->bindingSource1))->EndInit();
 			this->ResumeLayout(false);
 
 		}
